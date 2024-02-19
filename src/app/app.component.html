@@ -1,5 +1,78 @@
-<div class="grid h-screen place-items-center">
-  <div class="font-bold text-3xl">
-    Fyle Internship Challenge
+<div class="h-screen place-items-start">
+  <div class="flex font-bold text-3xl p-10 bg-red-400 text-white w-screen">
+    <h1>Fyle Internship Challenge</h1>
+  </div>
+  <div class="font-bold text-3xl text-center p-8 bg-fuchsia-700 text-white">
+    <h1>GitHub Repositories listing page</h1>
+  </div>
+  <div class="content place-content-center justify-center align-middle flex text-lg p-4">
+    <span>fyle-frontend-challenge app is running!</span>
+  </div>
+  <div class="p-5 flex justify-center align-middle space-x-4">
+    <input type="text" [(ngModel)]="githubUsername" 
+    placeholder="Enter your GitHub username" class="w-96 border-black border-[2.4px] rounded-lg"/>
+    <button (click)="searchUser()" class="p-4 w-fit
+     bg-black text-white rounded-lg text-lg">Search</button>
+  </div>
+  
+  <div *ngIf="!flag" class="border border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto mt-10">
+    <div class="animate-pulse flex space-x-4">
+      <div class="rounded-full bg-slate-200 h-10 w-10"></div>
+      <div class="flex-1 space-y-6 py-1">
+        <div class="h-2 bg-slate-200 rounded"></div>
+        <div class="space-y-3">
+          <div class="grid grid-cols-3 gap-4">
+            <div class="h-2 bg-slate-200 rounded col-span-2"></div>
+            <div class="h-2 bg-slate-200 rounded col-span-1"></div>
+          </div>
+          <div class="h-2 bg-slate-200 rounded"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div *ngIf="user && flag" class="flex justify-center align-middle">
+    <img [src]="user.avatar_url" class="float-left w-[15rem] h-[15rem] rounded-full">
+    <div class="flex-col pt-8 pl-8 gap-6 w-[450px] h-auto">    
+    <h3 class="text-xl">{{user.name}}</h3>
+    <h4 class="text-xl">{{user.bio}}</h4>
+    <h4 class="text-xl">{{user.location}}</h4>
+    <h4 *ngIf="user.twitter_username" class="text-lg">Twitter: <a [href]="'https://www.twitter.com/'+user.twitter_username">https://www.twitter.com/{{user.twitter_username}}</a></h4>
+    <h4 class="text-lg">GitHub Profile : <a [href]="user.html_url" class="text-lg">{{user.html_url}}</a></h4>
+    </div>
+  </div>
+
+  <div *ngIf="!user">
+    <h1 class="text-center font-bold text-2xl pt-7 pb-5">Enter a GitHub username</h1>
+  </div>
+
+  <div *ngIf="user && flag && repositories && repositories.length > 0">
+    <h1 class="text-center font-bold text-2xl pt-7 pb-5">Public Repositories for {{displayedUsername}}</h1>
+    <div class="card-container place-content-center">
+      <div class="card" *ngFor="let repo of repositories">
+        <div class="card-body">
+          <h5 class="card-title"><a [href]="repo.html_url" target="_blank">{{repo.name}}</a></h5>
+          <p class="card-text">{{repo.description}}</p>
+          <div class="mt-auto flex flex-wrap gap-2 pt-3">
+          <p *ngFor="let topic of repo.topics" class="card-text bg-fuchsia-700 text-white w-fit p-2 rounded-lg">{{topic}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="ml-8 mt-8">
+        Repositories per page : 
+      <select (change)="onPageSizeChange($event)">
+        <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+      </select>
+      </div>
+      <div class="flex place-content-center gap-3">
+      <button (click)="onPreviousPage()" [disabled]="currentPage === 1" class="bg-blue-600 hover:bg-fuchsia-700 text-white rounded-lg p-2">Previous</button>
+      <button class="bg-blue-600 hover:bg-fuchsia-700 rounded-lg text-white pt-2 pb-2 pl-4 pr-4" *ngFor="let page of pages" (click)="onPageChange(page)">{{ page }}</button>
+      <button (click)="onNextPage()" [disabled]="currentPage===totalPages" class="bg-blue-600 text-white rounded-lg p-2 hover:bg-fuchsia-700">Next</button>
+      </div>
+    </div>
   </div>
 </div>
